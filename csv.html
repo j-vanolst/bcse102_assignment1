@@ -1,9 +1,24 @@
+<!DOCTYPE html>
 <html>
-  <head></head>
+  <head>
+    <link rel='stylesheet' type='text/css' href='style.css'>
+  </head>
   <body>
     <input type='file' id='matchesCSV'>
     <input type='button' name='submitMatchesFile' value='Import' onclick='readCSV()'>
     </div>
+    <!--LAST SEMESTER IMPORT-->
+    <script src="prog2/src/SetExtensions.js"></script>
+    <script src="prog2/src/View.js"></script>
+    <script src="prog2/src/Team.js"></script>
+    <script src="prog2/src/Match.js"></script>
+    <script src="prog2/src/Pool.js"></script>
+    <script src="prog2/src/Sport.js"></script>
+    <script src="prog2/src/Tournament.js"></script>
+    <script src="prog2/src/Controller.js"></script>
+    <script src="prog2/src/addPoolResults.js"></script>
+    <script src="prog2/src/shortNames.js"></script>
+    <!--IMPORT FINISH-->
     <script>
       function readCSV() {
         var selectedFile = document.getElementById('matchesCSV').files[0]
@@ -16,13 +31,30 @@
         }
       }
       function generateTable(rows) {
-        
+        var table = document.createElement('table')
         for (let aRow of rows) {
+          var tr = document.createElement('tr')
           var fields = aRow.split(',')
           for (let aField of fields) {
+            var td = document.createElement('td')
+            td.innerText = aField
+            tr.appendChild(td)
           }
+          table.appendChild(tr)
         }
+        document.body.appendChild(table)
       }
+    </script>
+    <script>
+    var the2018Games // GLOBAL FOR DEBUGGING
+      var go = function () {
+        the2018Games = Controller.setup()
+        document.body.style.fontFamily = 'Courier New'
+        addPoolResults(the2018Games) // NEW LINE FOR ASSIGNMENT 2
+        addShortNames(the2018Games) // NEW LINE FOR ASSIGNMENT 2
+        console.log( the2018Games )
+      }
+      window.onload = go;
     </script>
   </body>
 </html>
