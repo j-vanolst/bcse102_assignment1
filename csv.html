@@ -1,0 +1,28 @@
+<html>
+  <head></head>
+  <body>
+    <input type='file' id='matchesCSV'>
+    <input type='button' name='submitMatchesFile' value='Import' onclick='readCSV()'>
+    </div>
+    <script>
+      function readCSV() {
+        var selectedFile = document.getElementById('matchesCSV').files[0]
+        var reader = new FileReader()
+        reader.readAsText(selectedFile)
+        reader.onload = function(event) {
+          var data = event.target.result
+          var rows = data.split('\n')
+          generateTable(rows)
+        }
+      }
+      function generateTable(rows) {
+        
+        for (let aRow of rows) {
+          var fields = aRow.split(',')
+          for (let aField of fields) {
+          }
+        }
+      }
+    </script>
+  </body>
+</html>
