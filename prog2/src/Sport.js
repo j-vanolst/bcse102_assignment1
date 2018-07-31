@@ -13,7 +13,7 @@ class Sport {
     return this.allMyTeams.find(aTeam => aTeam.name === targetName)
   }
   addTeam(newName){
-    let aTeam = this.findTeam(newName) 
+    let aTeam = this.findTeam(newName)
     if (! aTeam) {
       aTeam = new Team(newName)
       this.allMyTeams.push(aTeam)
@@ -30,7 +30,7 @@ class Sport {
       } // a must be equal to b
       return 0
     })
-  } 
+  }
 
   findPool (targetName) {
      return this.allMyPools.find(aPool => aPool.name === targetName)
@@ -48,7 +48,7 @@ class Sport {
   }
   addPool (newName) {
     let name = newName.trim()
-    let aPool = this.findPool(name) 
+    let aPool = this.findPool(name)
     if (! aPool) {
       aPool = new Pool(name)
       this.allMyPools.push(aPool)
@@ -93,8 +93,8 @@ class Sport {
     }
     return result
   }
-  
-  
+
+
     sortMatchesByPool ()  {
     this.allMyMatches.sort((a,b) => {
       if (a.myPool.name < b.myPool.name) {
@@ -107,9 +107,9 @@ class Sport {
          return 0
        }
   })
-    
+
   }
-  
+
   getMatchResults () {
     this.sortMatchesByPool()
     let result = '*' + this.name + View.NEWLINE()
@@ -118,8 +118,16 @@ class Sport {
     }
     return result
   }
-  
-  
+
+  getMatchesForTable() {
+    this.sortMatches()
+    let matchList = []
+    for (let aMatch of this.allMyMatches) {
+      matchList.push(aMatch)
+    }
+    return matchList
+  }
+
   getNZMatches () {
     this.sortMatchesByPool()
     let result = '*' + this.name + View.NEWLINE()
@@ -134,7 +142,7 @@ class Sport {
   findMatch(winner, looser) {
    return this.allMyMatches.find(aMatch => ((aMatch.myTeamA === winner && aMatch.myTeamB === looser) || (aMatch.myTeamB === winner && aMatch.myTeamA === looser)))
   }
-  
+
   addPoolResult (winnerName, looserName, newWinnwerScore, newLooserScore) {
     let winner = this.findTeam(winnerName)
     let looser = this.findTeam(looserName)
@@ -152,7 +160,7 @@ class Sport {
     let theTeam = this.findTeam(fullTeamName)
     theTeam.shortName = shortTeamName
   }
-  
+
   getResults () {
     let result = `Results for ${this.name}` + View.NEWLINE()
     this.sortPools()
@@ -160,14 +168,14 @@ class Sport {
       let thePool = aMatch.myPool
       thePool.addMatch(aMatch)
     }
-    
+
     for (let aPool of this.allMyPools) {
       result += aPool + View.NEWLINE()
       result += aPool.getResults()
     }
     return result
   }
-  
+
     sortTeams () {
     this.allMyTeams.sort((a, b) => {
       if (a.name < b.name) {
@@ -178,9 +186,9 @@ class Sport {
       } // a must be equal to b
       return 0
     })
-  } 
-  
-  
+  }
+
+
     getTeamResults() {
     this.sortTeams()
     let result = '*' + this.name + View.NEWLINE()

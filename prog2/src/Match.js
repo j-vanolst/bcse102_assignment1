@@ -13,21 +13,21 @@ class Match {
   toString() {
     //return `${this.when.toDateString()} ${this.when.toLocaleTimeString()} ${this.myPool} ${this.myTeamA} vs ${this.myTeamB} `
     return `${this.myPool} ${this.myTeamA} vs ${this.myTeamB} ${this.scoreA} - ${this.scoreB}`
-    
+
   }
-  
+
   addResult (newScoreA, newScoreB) {
       this.scoreA = newScoreA
       this.scoreB = newScoreB
-      
+
       this.myTeamA.incPlayed()
       this.myTeamA.incScoreFor(newScoreA)
       this.myTeamA.incScoreAgainst(newScoreB)
-    
+
       this.myTeamB.incPlayed()
       this.myTeamB.incScoreFor(newScoreB)
       this.myTeamB.incScoreAgainst(newScoreA)
-    
+
       if (newScoreA > newScoreB ) {
           this.myTeamA.incWin()
           this.myTeamB.incLoss()
@@ -37,7 +37,7 @@ class Match {
           this.myTeamA.incLoss()
       }
   }
-  
+
   findScore(targetTeamName){
     let score = this.scoreA
     if (this.myTeamA.name !== targetTeamName){

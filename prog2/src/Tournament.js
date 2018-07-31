@@ -11,13 +11,20 @@ class Tournament {
     this.allMySports.push(newSport)
     return newSport
   }
-  
+
   getSports() {
     let result = ''
     for (let aSport of this.allMySports) {
       result += aSport + View.NEWLINE()
     }
     return result
+  }
+  getSportsForSelect() {
+    let sportsList = []
+    for (let aSport of this.allMySports) {
+      sportsList.push(aSport)
+    }
+    return sportsList
   }
   getTeams() {
     let result = ''
@@ -50,7 +57,7 @@ class Tournament {
   }
   getParticipation () {
     let result = ''
-    
+
     let netballSet = new  Set()
     for (let aTeam of this.allMySports[0].allMyTeams) {
       netballSet.add(aTeam.name)
@@ -66,7 +73,7 @@ class Tournament {
     let all3Set = netballSet.intersection(mens7sSet)
     all3Set = all3Set.intersection(womens7sSet)
   }
-  
+
   getResults () {
     let result = ''
     for (let aSport of this.allMySports) {
@@ -74,7 +81,7 @@ class Tournament {
     }
     return result
   }
-  
+
     getMatchResults() {
     let result = ''
     for (let aSport of this.allMySports) {
@@ -82,7 +89,7 @@ class Tournament {
     }
     return result
   }
-  
+
     getTeamResults() {
     let result = ''
     for (let aSport of this.allMySports) {
@@ -90,7 +97,7 @@ class Tournament {
     }
     return result
   }
-  
+
   getAll() {
     let result = 'Programming Assignment 2' + View.NEWLINE()
     result += this + View.NEWLINE()
@@ -104,7 +111,7 @@ class Tournament {
     result += 'MATCHES RESULTS' + View.NEWLINE() +  View.NEWLINE() + this.getResults() + View.NEWLINE()
     return result
   }
-  
+
   findSport (targetName) {
     return this.allMySports.find(aSport => aSport.name === targetName)
   }
