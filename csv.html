@@ -72,8 +72,15 @@
         }
         for (let aRow of rows) {
           var tr = document.createElement('tr')
-          //let when = aRow.when
-          let when = `${aRow.when.getDay()} ${aRow.when.getMonth()} ${aRow.when.getDate()} ${aRow.when.getFullYear()} ${aRow.when.getHours()}:${aRow.when.getMinutes()}`
+          months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+          days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+          if (aRow.when.getMinutes() == 0) {
+            var minutes = '00'
+          }
+          else {
+            var minutes = aRow.when.getMinutes()
+          }
+          let when = `${days[aRow.when.getDay()]}, ${months[aRow.when.getMonth()]} ${aRow.when.getDate()} ${aRow.when.getFullYear()} ${aRow.when.getHours()}:${minutes}`
           let thePool = aRow.myPool
           let theTeamA = aRow.myTeamA
           let theTeamB = aRow.myTeamB
