@@ -26,13 +26,14 @@ body {
   width: 960px;
   margin-left: auto;
   margin-right: auto;
-  border-style: solid;
-  border-color: black;
 }
 table {
   width: 750px;
   margin-left: auto;
   margin-right: auto;
+  border-style: solid;
+  border-color: black;
+  padding: 0 20px;
 }
 th {
   background-color: #004d98;
