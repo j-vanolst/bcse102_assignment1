@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel='stylesheet' type='text/css' href='style.css'>
+  </head>
+  <body>
+    <div id='topbar'>
+      <h1>Gold Coast - Commonwealth Games 2018</h1>
+    </div>
+    <div id='menu'>
+      <ul>
+        <li><a id='menuButtonCSV' href="#">Upload CSV's</a></li>
+        <li><a id='menuButtonResults' href="#">Results</a></li>
+      </ul>
+    </div>
+    <div id='contentContainer'>
+    </div>
+    <script>
+      document.getElementById('menuButtonCSV').addEventListener('click', generateCSVUpload)
+      document.getElementById('menuButtonResults').addEventListener('click', generateResults)
+      function generateCSVUpload() {
+        clearContainer()
+        let matchesLabel = createLabel('matchesImport', 'Matches CSV: ')
+        let resultsLabel = createLabel('resultsImport', 'Results CSV: ')
+        let matchesInput = createFileInput('matchesImport')
+        let resultsInput = createFileInput('resultsImport')
+        let container = document.getElementById('contentContainer')
+        container.appendChild(matchesLabel)
+        container.appendChild(matchesInput)
+        createBreak(2)
+        container.appendChild(resultsLabel)
+        container.appendChild(resultsInput)
+      }
+      function generateResults() {
+        clearContainer()
+        let container = document.getElementById('contentContainer')
+        container.innerText = 'This is a test'
+      }
+      function createFileInput(id) {
+        let input = document.createElement('input')
+        let att_id = document.createAttribute('id')
+        att_id.value = id
+        let att_type = document.createAttribute('type')
+        att_type.value = 'file'
+        input.setAttributeNode(att_id)
+        input.setAttributeNode(att_type)
+        return input
+      }
+      function createLabel(for_id, content) {
+        let label = document.createElement('label')
+        let att_for = document.createAttribute('for')
+        att_for.value = for_id
+        label.setAttributeNode(att_for)
+        label.innerText = content
+        return label
+      }
+      function createBreak(number = 1) {
+        let container = document.getElementById('contentContainer')
+        for (let i = 0; i < number; i++) {
+          let br = document.createElement('br')
+          container.appendChild(br)
+        }
+      }
+      function clearContainer() {
+        container = document.getElementById('contentContainer')
+        container.innerText = ''
+      }
+    </script>
+  </body>
+</html>

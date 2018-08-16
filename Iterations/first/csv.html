@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel='stylesheet' type='text/css' href='style.css'>
+  </head>
+  <body>
+    <div id='topbar'>
+      <h1>Gold Coast - Commonwealth Games 2018</h1>
+    </div>
+    <input type='file' id='matchesCSV'>
+    <input type='button' name='submitMatchesFile' value='Import' onclick='readCSV()'>
+    <br>
+    <input type='button' name='submitSportSelection' value='Generate' onclick='divFiller()'>
+    <div id='matchesContainer'>
+    </div>
+    <!--LAST SEMESTER IMPORT-->
+    <script src="prog2/src/SetExtensions.js"></script>
+    <script src="prog2/src/View.js"></script>
+    <script src="prog2/src/Team.js"></script>
+    <script src="prog2/src/Match.js"></script>
+    <script src="prog2/src/Pool.js"></script>
+    <script src="prog2/src/Sport.js"></script>
+    <script src="prog2/src/Tournament.js"></script>
+    <script src="prog2/src/Controller.js"></script>
+    <script src="prog2/src/addPoolResults.js"></script>
+    <script src="prog2/src/shortNames.js"></script>
+    <!--IMPORT FINISH-->
+    <script>
+      function readCSV() {
+        var selectedFile = document.getElementById('matchesCSV').files[0]
+        var reader = new FileReader()
+        reader.readAsText(selectedFile)
+        reader.onload = function(event) {
+          var data = event.target.result
+          var rows = data.split('\n')
+          generateTable(rows)
+        }
+      }
+      function getMatches() {
+        selectedSportName = document.getElementById('sportSelector').value
+        selectedSport = the2018Games.findSport(selectedSportName)
+        matches = selectedSport.getMatchesForTable()
+        return matches
+      }
+      function generateTable(rows) {
+        var table = document.createElement('table')
+        for (let aRow of rows) {
+          var tr = document.createElement('tr')
+          var fields = aRow.split(',')
+          for (let aField of fields) {
+            var td = document.createElement('td')
+            td.innerText = aField
+            tr.appendChild(td)
+          }
+          table.appendChild(tr)
+        }
+        return table
+      }
+      function divFiller() {
+        document.getElementById('matchesContainer').innerHTML = ""
+        matches = getMatches()
+        table = generateTableFromObject(matches)
+        document.getElementById('matchesContainer').appendChild(table)
+      }
+      function generateTableFromObject(rows) {
+        var table = document.createElement('table')
+        var fields = ['When', 'Pool', 'Team A', 'Team B']
+        for (let aField of fields) {
+          var th = document.createElement('th')
+          th.innerText = aField
+          table.appendChild(th)
+        }
+        for (let aRow of rows) {
+          var tr = document.createElement('tr')
+          months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+          days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+          if (aRow.when.getMinutes() == 0) {
+            var minutes = '00'
+          }
+          else {
+            var minutes = aRow.when.getMinutes()
+          }
+          let when = `${days[aRow.when.getDay()]}, ${months[aRow.when.getMonth()]} ${aRow.when.getDate()} ${aRow.when.getFullYear()} ${aRow.when.getHours()}:${minutes}`
+          let thePool = aRow.myPool
+          let theTeamA = aRow.myTeamA
+          let theTeamB = aRow.myTeamB
+          fields = [when, thePool, theTeamA, theTeamB]
+          for (let aField of fields) {
+            var td = document.createElement('td')
+            td.innerText = aField
+            tr.appendChild(td)
+          }
+          table.appendChild(tr)
+        }
+        return table
+      }
+      function generateSelect(sports) {
+        var select = document.createElement('select')
+        var att = document.createAttribute('id')
+        att.value = 'sportSelector'
+        select.setAttributeNode(att)
+        for (let aSport of sports) {
+          let sportName = aSport.name
+          var option = document.createElement('option')
+          var att = document.createAttribute('value')
+          att.value = sportName
+          option.setAttributeNode(att)
+          option.innerText = sportName
+          select.appendChild(option)
+        }
+        document.body.appendChild(select)
+      }
+    </script>
+    <script>
+      var the2018Games // GLOBAL FOR DEBUGGING
+      var go = function () {
+        the2018Games = Controller.setup()
+        document.body.style.fontFamily = 'Courier New'
+        addPoolResults(the2018Games) // NEW LINE FOR ASSIGNMENT 2
+        addShortNames(the2018Games) // NEW LINE FOR ASSIGNMENT 2
+        console.log(the2018Games)
+        //var matchesForTable = the2018Games.getMatchesForTable()
+        //generateTableFromObject(matchesForTable)
+        var sportsForSelect = the2018Games.getSportsForSelect()
+        generateSelect(sportsForSelect)
+      }
+      window.onload = go;
+    </script>
+  </body>
+</html>
