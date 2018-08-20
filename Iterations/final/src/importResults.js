@@ -22,6 +22,8 @@ var resultsLoadedHandler = function (event) {
   jsonString = jsonString.slice(0, -1)
   jsonString += ']}'
   localStorage.setItem('resultInfo', jsonString)
+  go()
+  generateResults()
 }
 
 // define the reaction when change event happens

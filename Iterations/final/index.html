@@ -2,24 +2,40 @@
 <html>
   <head>
     <link rel='stylesheet' type='text/css' href='style.css'>
+    <script src="src/SetExtensions.js"></script>
+    <script src="src/View.js"></script>
+    <script src="src/Team.js"></script>
+    <script src="src/Match.js"></script>
+    <script src="src/Pool.js"></script>
+    <script src="src/Sport.js"></script>
+    <script src="src/Tournament.js"></script>
+    <script src="src/Controller.js"></script>
+    <script src="src/addPoolResults.js"></script>
+    <script src="src/shortNames.js"></script>
+    <script src='src/importMatches.js'></script>
+    <script src='src/importResults.js'></script>
   </head>
   <body>
     <div id='topbar'>
       <h1>Gold Coast - Commonwealth Games 2018</h1>
     </div>
-    <div id='menu'>
-      <ul>
-        <li><a id='menuButtonCSV' href="#">Upload CSV's</a></li>
-        <li><a id='menuButtonResults' href="#">Results</a></li>
-      </ul>
+    <script>
+    function generateSportSelector() {
+      let container = document.getElementById('selectorArea')
+      let sportsForSelect = the2018Games.getSportsForSelect()
+      sportsSelector = createSelect(sportsForSelect, 'sportsSelector')
+      container.appendChild(sportsSelector)
+      document.getElementById('sportsSelector').addEventListener('change', sportChange)
+    }
+    </script>
+    <div id='selectorArea'>
     </div>
     <div id='contentContainer'>
     </div>
     <script>
-      document.getElementById('menuButtonCSV').addEventListener('click', generateCSVUpload)
-      document.getElementById('menuButtonResults').addEventListener('click', generateResults)
       function generateCSVUpload() {
         clearContainer()
+        createInstructions()
         let matchesLabel = createLabel('matchesImport', 'Matches CSV: ')
         let resultsLabel = createLabel('resultsImport', 'Results CSV: ')
         let matchesInput = createFileInput('matchesImport')
@@ -30,12 +46,58 @@
         createBreak(2)
         container.appendChild(resultsLabel)
         container.appendChild(resultsInput)
+        document.getElementById('matchesImport').addEventListener('change', matchesFileChangeHandler)
+        document.getElementById('resultsImport').addEventListener('change', resultsFileChangeHandler)
       }
+
       function generateResults() {
-        clearContainer()
-        let container = document.getElementById('contentContainer')
-        container.innerText = 'This is a test'
+        generateSportSelector()
+        sportChange()
       }
+
+      function sportChange() {
+        clearContainer()
+        let selectedSportName = document.getElementById('sportsSelector').value
+        let selectedSport = the2018Games.findSport(selectedSportName)
+        let matches = selectedSport.getMatchesForTable()
+        let matchesTable = generateTableFromObject(matches)
+        let container = document.getElementById('contentContainer')
+        container.appendChild(matchesTable)
+      }
+
+      function generateTableFromObject(rows) {
+        var table = document.createElement('table')
+        var fields = ['When', 'Pool', 'Team A', 'Team B']
+        for (let aField of fields) {
+          var th = document.createElement('th')
+          th.innerText = aField
+          table.appendChild(th)
+        }
+        for (let aRow of rows) {
+          var tr = document.createElement('tr')
+          months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+          days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+          if (aRow.when.getMinutes() == 0) {
+            var minutes = '00'
+          }
+          else {
+            var minutes = aRow.when.getMinutes()
+          }
+          let when = `${days[aRow.when.getDay()]}, ${months[aRow.when.getMonth()]} ${aRow.when.getDate()} ${aRow.when.getFullYear()} ${aRow.when.getHours()}:${minutes}`
+          let thePool = aRow.myPool
+          let theTeamA = aRow.myTeamA
+          let theTeamB = aRow.myTeamB
+          fields = [when, thePool, theTeamA, theTeamB]
+          for (let aField of fields) {
+            var td = document.createElement('td')
+            td.innerText = aField
+            tr.appendChild(td)
+          }
+          table.appendChild(tr)
+        }
+        return table
+      }
+
       function createFileInput(id) {
         let input = document.createElement('input')
         let att_id = document.createAttribute('id')
@@ -46,6 +108,7 @@
         input.setAttributeNode(att_type)
         return input
       }
+
       function createLabel(for_id, content) {
         let label = document.createElement('label')
         let att_for = document.createAttribute('for')
@@ -61,10 +124,65 @@
           container.appendChild(br)
         }
       }
+
       function clearContainer() {
         container = document.getElementById('contentContainer')
         container.innerText = ''
       }
+
+      function createSelect(sports, id) {
+        var select = document.createElement('select')
+        var att = document.createAttribute('id')
+        att.value = id
+        select.setAttributeNode(att)
+        for (let aSport of sports) {
+          let sportName = aSport.name
+          var option = document.createElement('option')
+          var att = document.createAttribute('value')
+          att.value = sportName
+          option.setAttributeNode(att)
+          option.innerText = sportName
+          select.appendChild(option)
+        }
+        return select
+      }
+
+      function createOrderedList(id, listItems) {
+        let ol = document.createElement('ol')
+        let att = document.createAttribute('id')
+        att.value = id
+        ol.setAttributeNode(att)
+        for (let aListItem of listItems) {
+          let li = createListItem(aListItem)
+          ol.appendChild(li)
+        }
+        return ol
+      }
+
+      function createListItem(listItem) {
+        let li = document.createElement('li')
+        li.innerText = listItem
+        return li
+      }
+
+      function createInstructions() {
+        let container = document.getElementById('contentContainer')
+        let listItems = []
+        listItems.push('Upload the CSV containing the match information.')
+        listItems.push('Upload the CSV containing the results of the matches.')
+        listItems.push('Click on the results button at the top of the page.')
+        let ol = createOrderedList('instructions', listItems)
+        container.appendChild(ol)
+      }
+
+      var the2018Games // GLOBAL FOR DEBUGGING
+      var go = function() {
+          the2018Games = Controller.setup()
+          addPoolResults(the2018Games) // NEW LINE FOR ASSIGNMENT 2
+          addShortNames(the2018Games) // NEW LINE FOR ASSIGNMENT 2
+        }
+
+      generateCSVUpload()
     </script>
   </body>
 </html>
