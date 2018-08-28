@@ -127,7 +127,16 @@ class Sport {
     }
     return matchList
   }
-
+  
+  getTeamsForTable() {
+	  this.sortTeams()
+	  let teamList = []
+	  for (let aTeam of this.allMyTeams) {
+		  teamList.push(aTeam)
+	  }
+	  return teamList
+  }
+  
   getNZMatches () {
     this.sortMatchesByPool()
     let result = '*' + this.name + View.NEWLINE()

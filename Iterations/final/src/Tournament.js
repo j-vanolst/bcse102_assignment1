@@ -97,7 +97,6 @@ class Tournament {
     }
     return result
   }
-
   getAll() {
     let result = 'Programming Assignment 2' + View.NEWLINE()
     result += this + View.NEWLINE()

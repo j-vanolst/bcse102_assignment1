@@ -31,10 +31,34 @@
     <div id='selectorArea'>
     </div>
     <div id='contentContainer'>
+		<div id='tabMenu'>
+			<button class='tabLinks' onclick='openTab(event, "matches")'>Matches</button>
+			<button class='tabLinks' onclick='openTab(event, "results")'>Results</button>
+		</div>
+		<div id='matches' class='tabContent'>
+		</div>
+		<div id='results' class='tabContent'>
+		</div>
     </div>
     <script>
+	function openTab(evt, tabName) {
+		var i, tabContent, tabLinks
+	
+		tabContent = document.getElementsByClassName('tabContent')
+		for (i = 0; i < tabContent.length; i++) {
+			tabContent[i].style.display = 'none'
+		}
+	
+		tabLinks = document.getElementsByClassName('tabLinks')
+		for (i = 0; i < tabLinks.length; i++) {
+			tabLinks[i].className = tabLinks[i].className.replace(' active', '')
+		}
+	
+		document.getElementById(tabName).style.display = 'block'
+		evt.currentTarget.className += ' active'
+	}
+	
       function generateCSVUpload() {
-        clearContainer()
         createInstructions()
         let matchesLabel = createLabel('matchesImport', 'Matches CSV: ')
         let resultsLabel = createLabel('resultsImport', 'Results CSV: ')
@@ -54,27 +78,68 @@
         generateSportSelector()
         sportChange()
       }
+	  
+	  function createMatches(selectedSport) {
+	  clearContainer('matches')
+	  let container = document.getElementById('matches')
+	  let matches = selectedSport.getMatchesForTable()
+	  let matchesTable = generateTableFromObject(matches)
+	  container.appendChild(matchesTable)
+	  }
+	  
+	  function createResults(selectedSport) {
+	  clearContainer('results')
+	  let container = document.getElementById('results')
+	  let teams = selectedSport.getTeamsForTable()
+	  let teamResultsTable = generateTeamResultsTable(teams)
+	  container.appendChild(teamResultsTable)
+	  }
 
       function sportChange() {
-        clearContainer()
         let selectedSportName = document.getElementById('sportsSelector').value
         let selectedSport = the2018Games.findSport(selectedSportName)
-        let matches = selectedSport.getMatchesForTable()
-        let matchesTable = generateTableFromObject(matches)
-        let container = document.getElementById('contentContainer')
-        container.appendChild(matchesTable)
+		createMatches(selectedSport)
+		createResults(selectedSport)
       }
 
+	  function generateTeamResultsTable(rows) {
+		let table = document.createElement('table')
+		let fields = ['Team', 'Played', 'Won', 'Lost', 'Drawn']
+		for (let aField of fields) {
+			let th = document.createElement('th')
+			th.innerText = aField
+			table.appendChild(th)
+		}
+		for (let aRow of rows) {
+			let tr = document.createElement('tr')
+			
+			let teamName = aRow.name
+			let played = aRow.matchesPlayed
+			let won = aRow.matchesWon
+			let lost = aRow.matchesLost
+			let drawn = aRow.matchesDrawn
+	  
+			let fields = [teamName, played, won, lost, drawn]
+			for (let aField of fields) {
+				let td = document.createElement('td')
+				td.innerText = aField
+				tr.appendChild(td)
+			}
+			table.appendChild(tr)
+		}
+		return table
+		}
+	  
       function generateTableFromObject(rows) {
-        var table = document.createElement('table')
-        var fields = ['When', 'Pool', 'Team A', 'Team B']
+		let table = document.createElement('table')
+        let fields = ['When', 'Pool', 'Team A', 'Team B']
         for (let aField of fields) {
-          var th = document.createElement('th')
+          let th = document.createElement('th')
           th.innerText = aField
           table.appendChild(th)
         }
         for (let aRow of rows) {
-          var tr = document.createElement('tr')
+          let tr = document.createElement('tr')
           months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
           days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
           if (aRow.when.getMinutes() == 0) {
@@ -125,8 +190,8 @@
         }
       }
 
-      function clearContainer() {
-        container = document.getElementById('contentContainer')
+      function clearContainer(divID) {
+        container = document.getElementById(divID)
         container.innerText = ''
       }
 
@@ -170,7 +235,7 @@
         let listItems = []
         listItems.push('Upload the CSV containing the match information.')
         listItems.push('Upload the CSV containing the results of the matches.')
-        listItems.push('Click on the results button at the top of the page.')
+        listItems.push('Click on one of the tabs at the top of the page.')
         let ol = createOrderedList('instructions', listItems)
         container.appendChild(ol)
       }
